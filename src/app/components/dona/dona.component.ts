@@ -9,8 +9,6 @@ export class DonaComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    console.log(this.data);
-
     this.doughnutChartData.labels = this.doughnutChartLabels;
     this.doughnutChartData.datasets = this.data;
   }
