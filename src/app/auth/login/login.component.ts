@@ -34,7 +34,6 @@ export class LoginComponent implements OnInit {
   public login() {
     this._usuarioService.login(this.loginForm.value).subscribe(
       (response) => {
-        console.log(response);
         if (this.loginForm.get('remember')?.value) {
           localStorage.setItem(
             'email-adminpro',

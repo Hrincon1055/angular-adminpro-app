@@ -6,6 +6,7 @@ import { LoginForm } from '../interfaces/login-form.interface';
 import { Observable, of } from 'rxjs';
 import { tap, map, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { Usuario } from '../models/usuario.model';
 declare const gapi: any;
 const base_url = environment.base_url;
 @Injectable({
@@ -13,12 +14,19 @@ const base_url = environment.base_url;
 })
 export class UsuarioService {
   public auth2: any;
+  public usuario!: Usuario;
   constructor(
     private _http: HttpClient,
     private _router: Router,
     private _ngZone: NgZone
   ) {
     this.googleInit();
+  }
+  get token(): string {
+    return localStorage.getItem('token-adminpro') || '';
+  }
+  get uid(): string {
+    return this.usuario.uid || '';
   }
 
   public googleInit() {
@@ -42,18 +50,26 @@ export class UsuarioService {
     });
   }
   public validarToken(): Observable<boolean> {
-    const token = localStorage.getItem('token-adminpro') || '';
     return this._http
       .get(`${base_url}/login/renew`, {
         headers: {
-          'x-token': token,
+          'x-token': this.token,
         },
       })
       .pipe(
-        tap((response: any) => {
+        map((response: any) => {
+          const {
+            email,
+            google,
+            img = '',
+            nombre,
+            role,
+            uid,
+          } = response.usuario;
+          this.usuario = new Usuario(nombre, email, google, img, role, uid, '');
           localStorage.setItem('token-adminpro', response.token);
+          return true;
         }),
-        map((response: any) => true),
         catchError((err) => of(false))
       );
   }
@@ -63,6 +79,21 @@ export class UsuarioService {
         localStorage.setItem('token-adminpro', response.token);
       })
     );
+  }
+  public actualizarPerfil(formData: {
+    email: string;
+    nombre: string;
+    role: string | undefined;
+  }) {
+    formData = {
+      ...formData,
+      role: this.usuario.role,
+    };
+    return this._http.put(`${base_url}/usuarios/${this.uid}`, formData, {
+      headers: {
+        'x-token': this.token,
+      },
+    });
   }
   public login(formData: LoginForm): Observable<any> {
     return this._http.post(`${base_url}/login`, formData).pipe(
