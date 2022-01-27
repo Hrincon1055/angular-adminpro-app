@@ -13,10 +13,11 @@ export class Usuario {
   ) {}
   // http://localhost:3005/api/upload/usuarios/f8e07160-bd3e-4d86-a393-5148f103b64b.jpg
   get imagenUrl(): string {
-    if (this.img?.includes('https')) {
+    if (!this.img) {
+      return `${base_url}/upload/usuarios/no-image`;
+    } else if (this.img?.includes('https')) {
       return this.img;
-    }
-    if (this.img) {
+    } else if (this.img) {
       return `${base_url}/upload/usuarios/${this.img}`;
     } else {
       return `${base_url}/upload/usuarios/no-image`;

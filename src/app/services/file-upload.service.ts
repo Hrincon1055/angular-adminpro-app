@@ -9,7 +9,7 @@ export class FileUploadService {
   public async actualizarFoto(
     archivo: File,
     tipo: 'usuarios' | 'medicos' | 'hospitales',
-    id: string
+    id: string | undefined
   ): Promise<any> {
     try {
       const url = `${base_url}/upload/${tipo}/${id}`;
