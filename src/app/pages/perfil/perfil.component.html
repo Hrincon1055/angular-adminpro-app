@@ -63,7 +63,11 @@
           />
           <img *ngIf="imgTemp" [src]="imgTemp" alt="" class="img-avatar" />
         </div>
-        <input type="file" (change)="cambiarImagen($event)" />
+        <input
+          type="file"
+          (change)="cambiarImagen($event)"
+          placeholder="File"
+        />
         <br />
         <br />
         <button

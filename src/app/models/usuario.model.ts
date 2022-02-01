@@ -11,7 +11,7 @@ export class Usuario {
     public uid?: string,
     public password?: string
   ) {}
-  // http://localhost:3005/api/upload/usuarios/f8e07160-bd3e-4d86-a393-5148f103b64b.jpg
+
   get imagenUrl(): string {
     if (!this.img) {
       return `${base_url}/upload/usuarios/no-image`;
