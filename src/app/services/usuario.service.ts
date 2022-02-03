@@ -37,8 +37,11 @@ export class UsuarioService {
       },
     };
   }
+  get role(): 'ADMIN_ROLE' | 'USER_ROLE' | undefined {
+    return this.usuario.role;
+  }
 
-  public googleInit() {
+  public googleInit(): Promise<void> {
     return new Promise<void>((resolve) => {
       gapi.load('auth2', () => {
         this.auth2 = gapi.auth2.init({
@@ -50,8 +53,13 @@ export class UsuarioService {
       });
     });
   }
-  public logout() {
+  private _guardarLocalStorage(token: string, menu: any): void {
+    localStorage.setItem('token-adminpro', token);
+    localStorage.setItem('menu-adminpro', JSON.stringify(menu));
+  }
+  public logout(): void {
     localStorage.removeItem('token-adminpro');
+    localStorage.removeItem('menu-adminpro');
     this.auth2.signOut().then(() => {
       this._ngZone.run(() => {
         this._router.navigateByUrl('/login');
@@ -76,7 +84,7 @@ export class UsuarioService {
             uid,
           } = response.usuario;
           this.usuario = new Usuario(nombre, email, google, img, role, uid, '');
-          localStorage.setItem('token-adminpro', response.token);
+          this._guardarLocalStorage(response.token, response.menu);
           return true;
         }),
         catchError((err) => of(false))
@@ -85,7 +93,7 @@ export class UsuarioService {
   public crearUsuario(formData: RegisterForm): Observable<any> {
     return this._http.post(`${base_url}/usuarios`, formData).pipe(
       tap((response: any) => {
-        localStorage.setItem('token-adminpro', response.token);
+        this._guardarLocalStorage(response.token, response.menu);
       })
     );
   }
@@ -107,14 +115,14 @@ export class UsuarioService {
   public login(formData: LoginForm): Observable<any> {
     return this._http.post(`${base_url}/login`, formData).pipe(
       tap((response: any) => {
-        localStorage.setItem('token-adminpro', response.token);
+        this._guardarLocalStorage(response.token, response.menu);
       })
     );
   }
   public loginGoogle(token: any): Observable<any> {
     return this._http.post(`${base_url}/login/google`, { token }).pipe(
       tap((response: any) => {
-        localStorage.setItem('token-adminpro', response.token);
+        this._guardarLocalStorage(response.token, response.menu);
       })
     );
   }

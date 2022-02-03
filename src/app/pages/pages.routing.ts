@@ -13,6 +13,8 @@ import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component'
 import { HospitalesComponent } from './mantenimientos/hospitales/hospitales.component';
 import { MedicosComponent } from './mantenimientos/medicos/medicos.component';
 import { MedicoComponent } from './mantenimientos/medicos/medico.component';
+import { BusquedaComponent } from './busqueda/busqueda.component';
+import { AdminGuard } from '../guards/admin.guard';
 
 const routes: Routes = [
   {
@@ -55,9 +57,15 @@ const routes: Routes = [
         component: PerfilComponent,
         data: { titulo: 'Perfil' },
       },
+      {
+        path: 'buscar/:termino',
+        component: BusquedaComponent,
+        data: { titulo: 'Busquedas' },
+      },
       // mantenimientos
       {
         path: 'usuarios',
+        canActivate: [AdminGuard],
         component: UsuariosComponent,
         data: { titulo: 'Usuarios de apilicación' },
       },
@@ -78,12 +86,6 @@ const routes: Routes = [
       },
     ],
   },
-
-  //{ path: 'path/:routeParam', component: MyComponent },
-  //{ path: 'staticPath', component: ... },
-  //{ path: '**', component: ... },
-  //{ path: 'oldPath', redirectTo: '/staticPath' },
-  //{ path: ..., component: ..., data: { message: 'Custom' }
 ];
 
 @NgModule({

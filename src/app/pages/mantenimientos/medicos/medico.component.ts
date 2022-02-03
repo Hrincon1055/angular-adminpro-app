@@ -42,7 +42,7 @@ export class MedicoComponent implements OnInit {
       );
     });
   }
-  public cargarMedico(id: string) {
+  public cargarMedico(id: string): void {
     if (id === 'nuevo') {
       return;
     }
@@ -87,7 +87,6 @@ export class MedicoComponent implements OnInit {
       });
     } else {
       // Crear medico
-
       this._medicoService
         .crearMedico(this.medicoForm.value)
         .subscribe((response) => {

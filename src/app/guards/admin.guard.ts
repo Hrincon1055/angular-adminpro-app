@@ -4,27 +4,27 @@ import {
   CanActivate,
   Router,
   RouterStateSnapshot,
-  UrlTree,
 } from '@angular/router';
-import { tap } from 'rxjs/operators';
 
 import { UsuarioService } from '../services/usuario.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(
     private _usuarioService: UsuarioService,
     private _router: Router
   ) {}
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return this._usuarioService.validarToken().pipe(
-      tap((isAuth) => {
-        if (!isAuth) {
-          this._router.navigateByUrl('/login');
-        }
-      })
-    );
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean {
+    if (this._usuarioService.role === 'ADMIN_ROLE') {
+      return true;
+    } else {
+      this._router.navigateByUrl('/dashboard');
+      return false;
+    }
   }
 }
